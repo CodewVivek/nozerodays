@@ -4,12 +4,28 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Trophy, PlusCircle, Settings, Menu, X, Sun, Moon, Zap } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { ADMIN_HANDLES } from '../lib/constants';
 
 const Navbar = () => {
     const [mounted, setMounted] = useState(false);
     const [isSpinning, setIsSpinning] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const pathname = usePathname();
     const { theme, setTheme, resolvedTheme } = useTheme();
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const handle = session.user.user_metadata?.user_name || session.user.user_metadata?.preferred_username;
+                if (ADMIN_HANDLES.includes(handle)) {
+                    setIsAdmin(true);
+                }
+            }
+        };
+        checkAdmin();
+    }, []);
 
     useEffect(() => {
         setMounted(true);
@@ -56,13 +72,15 @@ const Navbar = () => {
 
                     {/* Right Side: Utilities */}
                     <div className="flex items-center gap-2">
-                        <Link
-                            href="/admin"
-                            className={`p-2.5 rounded-xl transition-all border border-transparent ${pathname === '/admin' ? 'bg-primary/10 text-primary border-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-card'}`}
-                            title="Admin Dashboard"
-                        >
-                            <Settings size={20} />
-                        </Link>
+                        {isAdmin && (
+                            <Link
+                                href="/admin"
+                                className={`p-2.5 rounded-xl transition-all border border-transparent ${pathname === '/admin' ? 'bg-primary/10 text-primary border-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-card'}`}
+                                title="Admin Dashboard"
+                            >
+                                <Settings size={20} />
+                            </Link>
+                        )}
 
                         <button
                             onClick={() => setTheme(currentTheme === 'dark' ? 'light' : 'dark')}

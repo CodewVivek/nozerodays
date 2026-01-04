@@ -1,0 +1,18 @@
+---
+description: Access to .env files is prohibited. Do not view, print, or modify environment files directly.
+---
+
+blockCommands:
+  - "cat"
+  - "tac"
+  - "more"
+  - "less"
+  - "head"
+  - "tail"
+  - "nl"
+  - "awk"
+  - "pv"
+  - "bat"
+  - "ccat"
+message: |
+  Access to .env files is prohibited. Do not view, print, or modify environment files directly.

@@ -4,9 +4,19 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-    if (typeof window !== 'undefined') {
-        console.warn('Supabase credentials missing. Please check your .env.local file.')
-    }
+    throw new Error(
+        'Missing Supabase environment variables. Check .env.local'
+    )
 }
 
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder')
+export const supabase = createClient(
+    supabaseUrl,
+    supabaseAnonKey,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+        },
+    }
+)

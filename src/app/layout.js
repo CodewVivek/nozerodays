@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 export const metadata = {
+  metadataBase: new URL("https://nozerodays.com"),
   title: {
     default: "NoZeroDays | Daily Build-in-Public Leaderboard",
     template: "%s | NoZeroDays"
@@ -65,9 +66,9 @@ export default function RootLayout({ children }) {
               <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-secondary text-xs font-medium">
                 <div>&copy; 2026 NoZeroDays. All rights reserved.</div>
                 <div className="flex gap-6">
-                  <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-                  <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-                  <a href="#" className="hover:text-foreground transition-colors">X</a>
+                  <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
+                  <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
+                  <a href="https://x.com/nozerodays" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">X</a>
                 </div>
               </div>
             </footer>
