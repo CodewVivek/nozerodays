@@ -66,7 +66,7 @@ export default function RootLayout({ children }) {
       <body className="antialiased bg-background text-foreground min-h-screen">
      <Script
           defer
-          src="http://localhost:3001/track.js"
+          src="https://datalaunch.vercel.app/track.js"
           data-site-id="ba842eb5-ca56-4da3-a40a-654a43a58c0d"
         />
         <ToastProvider>
