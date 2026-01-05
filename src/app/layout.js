@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { XIcon } from "../components/Icons";
 
+
+
 export const metadata = {
   metadataBase: new URL("https://nozerodays.com"),
   title: {
@@ -54,6 +56,7 @@ export const metadata = {
 };
 
 import ReviewPendingModal from "../components/ReviewPendingModal";
+import Script from "next/script";
 
 // ... (other imports)
 
@@ -61,6 +64,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-background text-foreground min-h-screen">
+     <Script
+          defer
+          src="http://localhost:3001/track.js"
+          data-site-id="ba842eb5-ca56-4da3-a40a-654a43a58c0d"
+        />
         <ToastProvider>
           <AuthSync />
           <ReviewPendingModal />
