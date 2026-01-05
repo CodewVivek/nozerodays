@@ -1,65 +1,113 @@
 export default function PrivacyPage() {
     return (
-        <main className="max-w-3xl mx-auto px-6 py-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            <div className="space-y-12">
-                <header className="space-y-4">
-                    <h1 className="text-4xl font-black tracking-tight">Privacy Policy</h1>
-                    <p className="text-muted-foreground">Last updated: January 2026</p>
+        <main className="max-w-4xl mx-auto px-6 py-24 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div className="space-y-16">
+                <header className="space-y-6">
+                    <h1 className="text-5xl sm:text-6xl font-black tracking-tight uppercase italic">
+                        Privacy Policy
+                    </h1>
+                    <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                        <span className="w-12 h-px bg-border"></span>
+                        Last updated: January 2026
+                    </div>
                 </header>
 
-                <section className="space-y-6">
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-bold">1. Information We Collect</h2>
-                        <p className="text-muted-foreground leading-relaxed">
-                            To provide our streak tracking service, we utilize "Sign in with X" (formerly Twitter).
-                            When you authenticate, we collect the following public information:
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-border/40 pt-12">
+                    <aside className="space-y-4">
+                        <h2 className="text-sm font-black uppercase tracking-[0.2em] text-primary">
+                            Our Promise
+                        </h2>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            We collect the minimum data required to operate a public
+                            accountability platform. No tracking. No selling. No dark
+                            patterns.
                         </p>
-                        <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                            <li>X Handle (Username)</li>
-                            <li>Display Name</li>
-                            <li>Profile Picture (Avatar)</li>
-                            <li>Bio (Description)</li>
-                        </ul>
-                    </div>
+                    </aside>
 
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-bold">2. How We Use Your Data</h2>
-                        <p className="text-muted-foreground leading-relaxed">
-                            Your data is used exclusively to:
-                        </p>
-                        <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                            <li>Verify your identity as a builder.</li>
-                            <li>Create and display your public leaderboard profile.</li>
-                            <li>Track and validate your 100-day shipping streak.</li>
-                        </ul>
-                    </div>
+                    <section className="md:col-span-2 space-y-12 text-muted-foreground leading-relaxed">
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                1. Information We Collect
+                            </h3>
+                            <p>
+                                When you sign in using 𝕏 (formerly Twitter), we collect basic
+                                public profile information including your username, display
+                                name, profile image, bio, and public engagement metadata.
+                            </p>
+                            <p>
+                                If you voluntarily add links (GitHub, website) or upload a
+                                custom avatar, we store only what you explicitly provide.
+                            </p>
+                        </div>
 
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-bold">3. Data Sharing</h2>
-                        <p className="text-muted-foreground leading-relaxed">
-                            We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties.
-                            Your profile information is public on the leaderboard, as is the nature of the challenge.
-                        </p>
-                    </div>
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                2. Authentication & Permissions
+                            </h3>
+                            <p>
+                                NoZeroDays requests <strong>read-only access</strong> to your
+                                𝕏 profile. We do not post tweets, send messages, or perform any
+                                actions on your behalf.
+                            </p>
+                        </div>
 
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-bold">4. Read-Only Access</h2>
-                        <p className="text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">
-                            We only request read-only access to your X profile. We will never post on your behalf or access your direct messages.
-                        </p>
-                    </div>
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                3. Data Storage & Security
+                            </h3>
+                            <p>
+                                All data is securely stored using Supabase infrastructure. We
+                                apply industry-standard access controls and encryption. We do
+                                not store passwords.
+                            </p>
+                        </div>
 
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-bold">5. Contact</h2>
-                        <p className="text-muted-foreground leading-relaxed">
-                            If you have any questions regarding this privacy policy, you may contact us via X.
-                        </p>
-                    </div>
-                </section>
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                4. Public Visibility
+                            </h3>
+                            <p>
+                                NoZeroDays is a public leaderboard. Your username, streak
+                                count, and submitted updates are visible to other users by
+                                design.
+                            </p>
+                        </div>
 
-                <footer className="pt-12 border-t border-border">
-                    <a href="/" className="text-sm font-bold text-primary hover:underline">
-                        ← Back to Leaderboard
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                5. Data Retention & Deletion
+                            </h3>
+                            <p>
+                                You may request deletion of your account and associated data
+                                at any time. We retain data only as long as necessary to
+                                operate the platform.
+                            </p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                6. No Sale of Data
+                            </h3>
+                            <p>
+                                We do not sell, rent, or trade your personal data. Ever.
+                            </p>
+                        </div>
+
+                        <div className="space-y-4 text-foreground font-medium italic border-l-2 border-primary pl-6">
+                            “Your data exists to track discipline — not to be exploited.”
+                        </div>
+                    </section>
+                </div>
+
+                <footer className="pt-16 border-t border-border/40">
+                    <a
+                        href="/"
+                        className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest hover:text-primary transition-colors"
+                    >
+                        <span className="transition-transform group-hover:-translate-x-1">
+                            ←
+                        </span>
+                        Back to Cockpit
                     </a>
                 </footer>
             </div>

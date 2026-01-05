@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import Link from 'next/link';
-import { Trophy, TrendingUp, Calendar, Hash, ChevronDown, Loader2, Timer } from 'lucide-react';
+import { Trophy, TrendingUp, Calendar, Hash, ChevronDown, Loader2, Timer, CheckCircle } from 'lucide-react';
+import { XIcon, VerifiedBadge } from './Icons';
+import { SkeletonLeaderboard } from './Skeleton';
 
 const STREAK_EXAMPLES = [
     { id: '1', username: 'pixelforge', current_streak: 21, longest_streak: 21, last_streak_day_utc: '2026-01-01' },
@@ -32,6 +34,7 @@ const PAGE_SIZE = 50;
 const Leaderboard = ({ searchQuery = "" }) => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searching, setSearching] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -41,7 +44,7 @@ const Leaderboard = ({ searchQuery = "" }) => {
     useEffect(() => {
         // Reset page and fetch when search query changes
         setPage(0);
-        fetchLeaderboard(0);
+        fetchLeaderboard(0, true);
     }, [searchQuery]);
 
     useEffect(() => {
@@ -80,9 +83,10 @@ const Leaderboard = ({ searchQuery = "" }) => {
         return () => clearInterval(timer);
     }, []);
 
-    const fetchLeaderboard = async (pageNum) => {
-        if (pageNum === 0) setLoading(true);
-        else setLoadingMore(true);
+    const fetchLeaderboard = async (pageNum, isSearch = false) => {
+        if (pageNum === 0 && !isSearch) setLoading(true);
+        if (isSearch) setSearching(true);
+        if (pageNum > 0) setLoadingMore(true);
 
         try {
             let query = supabase
@@ -137,6 +141,7 @@ const Leaderboard = ({ searchQuery = "" }) => {
             }
         } finally {
             setLoading(false);
+            setSearching(false);
             setLoadingMore(false);
         }
     };
@@ -149,9 +154,9 @@ const Leaderboard = ({ searchQuery = "" }) => {
 
     const getTimerColors = () => {
         const totalMinutes = timeLeft.hours * 60 + timeLeft.minutes;
-        if (totalMinutes < 30) return "text-red-500 bg-red-500/10 border-red-500/20";
-        if (totalMinutes < 120) return "text-yellow-500 bg-yellow-500/10 border-yellow-500/20";
-        return "text-accent bg-accent/10 border-accent/20";
+        if (totalMinutes < 30) return "text-red-600 bg-red-600/10 border-red-600/30";
+        if (totalMinutes < 120) return "text-amber-600 bg-amber-600/10 border-amber-600/30";
+        return "text-foreground/90 bg-muted/50 border-border/60 shadow-sm";
     };
 
     const timerClasses = getTimerColors();
@@ -168,61 +173,7 @@ const Leaderboard = ({ searchQuery = "" }) => {
 
     const formatNumber = (num) => num.toString().padStart(2, '0');
 
-    if (loading) {
-        return (
-            <div className="space-y-6">
-                {/* Skeleton Header */}
-                <div className="bg-card border border-border rounded-3xl shadow-sm relative overflow-hidden">
-                    <div className="p-6 border-b border-border flex justify-between items-center bg-card/50">
-                        <div className="h-8 w-40 bg-muted/20 rounded-lg animate-pulse" />
-                        <div className="h-8 w-24 bg-muted/20 rounded-full animate-pulse" />
-                    </div>
-
-                    {/* Skeleton Table */}
-                    <div className="overflow-x-auto bg-transparent">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="text-muted-foreground text-[13px] font-medium border-b border-border/30">
-                                    <th className="px-6 py-5 w-16 text-center">#</th>
-                                    <th className="px-6 py-5 text-left">Builder</th>
-                                    <th className="px-6 py-5 text-left">Streak</th>
-                                    <th className="px-6 py-5 text-left hidden sm:table-cell">Last Update</th>
-                                    <th className="px-6 py-5 text-left hidden md:table-cell">Best</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-border/50">
-                                {[...Array(10)].map((_, i) => (
-                                    <tr key={i}>
-                                        <td className="px-6 py-6 text-center">
-                                            <div className="w-6 h-6 mx-auto bg-muted/20 rounded-full animate-pulse" />
-                                        </td>
-                                        <td className="px-6 py-6">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-muted/20 animate-pulse flex-shrink-0" />
-                                                <div className="space-y-2">
-                                                    <div className="w-32 h-4 bg-muted/20 rounded-md animate-pulse" />
-                                                    <div className="w-20 h-3 bg-muted/10 rounded-md animate-pulse" />
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-6 text-center">
-                                            <div className="w-8 h-6 mx-auto bg-muted/20 rounded-md animate-pulse" />
-                                        </td>
-                                        <td className="px-6 py-6 text-center hidden sm:table-cell">
-                                            <div className="w-20 h-4 mx-auto bg-muted/20 rounded-md animate-pulse" />
-                                        </td>
-                                        <td className="px-6 py-6 text-center hidden md:table-cell">
-                                            <div className="w-12 h-6 bg-muted/20 rounded-full animate-pulse" />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    if (loading) return <SkeletonLeaderboard />;
 
     return (
         <div className="space-y-6">
@@ -231,27 +182,37 @@ const Leaderboard = ({ searchQuery = "" }) => {
                     <h2 className="text-xl font-bold flex items-center gap-2 text-foreground">
                         <Trophy className="text-yellow-500" size={24} />
                         Leaderboard
+                        {searching && <Loader2 className="animate-spin text-primary ml-2" size={18} />}
                     </h2>
                     <div className="flex items-center gap-3">
                         <div
-                            className={`group/timer flex items-center gap-1.5 px-3 py-1.5 rounded-full border cursor-help relative transition-colors ${timerClasses}`}
+                            className={`group/timer flex items-center gap-2 px-4 py-2 rounded-full border shadow-md transition-all duration-500 cursor-help relative hover:scale-105 ${timerClasses}`}
                         >
-                            <Timer size={14} />
-                            <span className="text-[11px] font-black font-mono">
-                                {formatNumber(timeLeft.hours)}:{formatNumber(timeLeft.minutes)}:{formatNumber(timeLeft.seconds)}
-                            </span>
-                            <span className="text-[9px] font-bold uppercase tracking-tighter opacity-70 ml-0.5">UTC</span>
+                            <div className="flex items-center gap-1.5">
+                                <div className="relative flex items-center justify-center">
+                                    <Timer size={14} className="animate-spin-slow" />
+                                </div>
+                                <span className="text-xs font-black font-mono tracking-wider">
+                                    {formatNumber(timeLeft.hours)}:{formatNumber(timeLeft.minutes)}:{formatNumber(timeLeft.seconds)}
+                                </span>
+                            </div>
 
-                            {/* Hover Tooltip - Styled */}
-                            <div className="absolute top-full right-0 mt-3 w-64 p-3 bg-zinc-900 border border-border rounded-2xl text-[11px] text-zinc-300 font-medium leading-relaxed opacity-0 invisible group-hover/timer:opacity-100 group-hover/timer:visible transition-all shadow-2xl z-50 pointer-events-none">
-                                <p className="mb-1 text-white font-bold text-xs">Why the Timer?</p>
-                                Streaks are calculated every 24h based on your 𝕏 updates. Submit your post before this deadline to keep your streak alive!
-                                <div className="absolute bottom-full right-6 -mb-1 border-4 border-transparent border-b-zinc-900"></div>
+
+                            {/* Hover Tooltip - Definitive contrast fix */}
+                            <div className="absolute top-full right-0 mt-3 w-64 p-5 bg-white dark:bg-[#1d2126] border border-slate-200 dark:border-slate-800 rounded-2xl text-[12px] text-slate-600 dark:text-slate-300 font-medium leading-relaxed opacity-0 invisible group-hover/timer:opacity-100 group-hover/timer:visible transition-all shadow-2xl z-[100] pointer-events-none translate-y-2 group-hover/timer:translate-y-0">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div className="p-1.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900">
+                                        <XIcon className="w-3.5 h-3.5" />
+                                    </div>
+                                    <p className="text-slate-900 dark:text-white font-black text-xs uppercase tracking-tight">Sync Deadline</p>
+                                </div>
+                                <p>Streaks are calculated on a rolling 24h cycle. Post your update to 𝕏 before the timer hits zero to keep your streak alive!</p>
+                                <div className="absolute bottom-full right-8 -mb-1 border-[6px] border-transparent border-b-white dark:border-b-[#1d2126]"></div>
                             </div>
                         </div>
                         {isMock && (
-                            <span className="px-3 py-1.5 bg-border/50 rounded-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                                Examples
+                            <span className="px-3 py-1.5 bg-border/40 text-muted-foreground/60 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-border/20">
+                                Samples
                             </span>
                         )}
                     </div>
@@ -279,18 +240,25 @@ const Leaderboard = ({ searchQuery = "" }) => {
                                     </td>
                                     <td className="px-6 py-6">
                                         <Link href={`/${user.username}`} className="flex items-center gap-3 group/link">
-                                            <div className="w-10 h-10 rounded-full bg-border flex-shrink-0 overflow-hidden border border-border group-hover:border-primary/50 transition-colors">
+                                            <div className={`w-10 h-10 rounded-full flex-shrink-0 overflow-hidden border transition-colors bg-border border-border group-hover:border-primary/50`}>
                                                 <img
-                                                    src={user.avatar_url || `https://api.dicebear.com/9.x/shapes/svg?seed=${user.username}`}
+                                                    src={user.avatar_url?.replace('_normal', '').replace('_bigger', '') || `https://api.dicebear.com/9.x/shapes/svg?seed=${user.username}`}
                                                     alt={user.username}
-                                                    className="w-full h-full object-cover"
+                                                    className={`w-full h-full object-cover`}
                                                 />
                                             </div>
                                             <div>
-                                                <div className="font-bold text-foreground group-hover/link:text-primary transition-colors">
+                                                <div className="font-bold text-foreground group-hover/link:text-primary transition-colors flex items-center gap-1">
                                                     {user.display_name || user.username}
+                                                    {(user.is_verified || user.is_admin) && (
+                                                        <div title="Verified User">
+                                                            <VerifiedBadge className="w-3.5 h-3.5 flex-shrink-0" />
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className="text-xs text-muted-foreground">@{user.username}</div>
+                                                <div className="text-xs text-muted-foreground">
+                                                    @{user.username}
+                                                </div>
                                             </div>
                                         </Link>
                                     </td>

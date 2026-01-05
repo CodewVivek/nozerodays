@@ -1,17 +1,29 @@
 "use client";
 import React, { useMemo } from 'react';
-import { Info } from 'lucide-react';
+import { Info, Zap } from 'lucide-react';
 
 const ActivityHeatmap = ({ userUpdates = [] }) => {
     // Generate GitHub-style grid data (53 weeks x 7 days)
-    const { weeksData, totalActiveDays } = useMemo(() => {
+    const { weeksData, totalActiveDays, monthLabels } = useMemo(() => {
+        // Step 1: Pre-normalize updates for O(1) lookup and consistent date format
+        const activeDaysSet = new Set(
+            userUpdates.map(u => {
+                // Handle potential different date formats safely
+                try {
+                    const d = new Date(u.post_day_utc);
+                    // Ensure valid date before ISO slicing
+                    return !isNaN(d.getTime()) ? d.toISOString().slice(0, 10) : null;
+                } catch (e) {
+                    return null;
+                }
+            }).filter(Boolean)
+        );
+
         const weeks = [];
         const today = new Date();
-
-        // 364 days back = 52 weeks ago
         const endDate = new Date(today);
         const startDate = new Date(endDate);
-        startDate.setDate(startDate.getDate() - 364);
+        startDate.setDate(startDate.getDate() - 364); // 52 weeks ago
 
         // Align to Sunday
         const dayOffset = startDate.getDay();
@@ -19,21 +31,32 @@ const ActivityHeatmap = ({ userUpdates = [] }) => {
         gridStartDate.setDate(gridStartDate.getDate() - dayOffset);
 
         let current = new Date(gridStartDate);
+        const months = [];
 
-        // Generate weeks
-        while (current <= endDate || weeks.length < 53) {
+        // Generate exactly 53 weeks (GitHub standard)
+        for (let w = 0; w < 53; w++) {
             const week = [];
             for (let i = 0; i < 7; i++) {
-                const dateStr = current.toISOString().split('T')[0];
-                const isFuture = current > today;
+                const dateStr = current.toISOString().slice(0, 10);
+                const isFuture = current > today; // Simple future check
 
-                // Active check
-                const isActive = userUpdates.some(u => u.post_day_utc === dateStr);
+                // Optimized O(1) Lookup
+                const isActive = activeDaysSet.has(dateStr);
+
+                // Track Month Changes for Labels
+                if (current.getDate() === 1 || (w === 0 && i === 0)) {
+                    const monthName = current.toLocaleDateString('en-US', { month: 'short' });
+                    if (months.length === 0 || months[months.length - 1].name !== monthName) {
+                        months.push({ name: monthName, weekIndex: w });
+                    }
+                }
 
                 week.push({
                     date: dateStr,
                     active: isActive,
-                    isFuture
+                    isFuture,
+                    dayName: current.toLocaleDateString('en-US', { weekday: 'short' }),
+                    formattedDate: current.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                 });
 
                 current.setDate(current.getDate() + 1);
@@ -41,78 +64,92 @@ const ActivityHeatmap = ({ userUpdates = [] }) => {
             weeks.push(week);
         }
 
-        const uniqueActiveDays = new Set(userUpdates.map(u => u.post_day_utc)).size;
+        const uniqueActiveDays = activeDaysSet.size; // Accurate count of unique approved days based on set
 
-        return { weeksData: weeks, totalActiveDays: uniqueActiveDays };
+        return { weeksData: weeks, totalActiveDays: uniqueActiveDays, monthLabels: months };
     }, [userUpdates]);
 
     return (
-        <div className="w-full space-y-4">
-            {/* Header: Stats + Tooltip */}
-            <div className="flex items-center justify-between">
-                <div className="text-sm text-foreground font-semibold">
-                    {totalActiveDays} contributions in the last year
-                </div>
-
-                <div className="relative group z-50">
-                    <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
-                        How it works <Info size={12} />
-                    </button>
-
-                    {/* Tooltip Content - Positioned Bottom Right to prevent top clipping */}
-                    <div className="absolute right-0 top-full mt-2 w-72 p-4 rounded-xl bg-popover border border-border shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-left z-50">
-                        <h4 className="font-bold text-foreground text-sm">Activity Heatmap</h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                            This grid visualizes your daily consistency. Each square is a day.
-                        </p>
-                        <ul className="text-xs text-muted-foreground space-y-1 list-disc pl-4">
-                            <li><span className="text-primary font-bold">Green squares</span>: You shipped an update.</li>
-                            <li><strong>Rows</strong>: Days of the week (Sun-Sat).</li>
-                            <li><strong>Columns</strong>: Weeks of the year.</li>
-                        </ul>
+        <div className="w-full space-y-6 group/grid">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary">
+                        <Zap size={20} className="fill-current" />
                     </div>
-                    {/* Triangle Arrow */}
-                    <div className="absolute top-[-5px] right-6 w-3 h-3 bg-popover border-t border-l border-border rotate-45"></div>
+                    <div>
+                        <h3 className="text-lg font-black italic tracking-tight uppercase leading-none">Execution History</h3>
+                        <p className="text-xs text-muted-foreground font-medium mt-1">
+                            {totalActiveDays} days of approved shipping in the last year
+                        </p>
+                    </div>
                 </div>
             </div>
 
             {/* Grid Container */}
-            <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
-                <div className="flex gap-[2px] min-w-max">
-                    {weeksData.map((week, wIndex) => (
-                        <div key={wIndex} className="flex flex-col gap-[2px]">
-                            {week.map((day) => (
-                                <div
-                                    key={day.date}
-                                    title={`${day.date}${day.active ? ': Shipped!' : ''}`}
-                                    className={`
-                                        w-[10px] h-[10px] rounded-[2px] transition-colors
-                                        ${day.active
-                                            ? 'bg-primary border border-primary/50' // Active: Solid Primary
-                                            : day.isFuture
-                                                ? 'opacity-0'
-                                                : 'bg-neutral-200 dark:bg-[#161b22] hover:bg-neutral-300 dark:hover:bg-[#2d333b]' // Adaptive Light/Dark
-                                        }
-                                    `}
-                                />
-                            ))}
+            <div className="relative p-6 bg-card border border-border/50 rounded-3xl overflow-hidden">
+                <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
+                    {/* Month Labels */}
+                    <div className="flex text-[10px] font-bold text-muted-foreground mb-2 relative h-4">
+                        {monthLabels.map((month, i) => (
+                            <span
+                                key={i}
+                                style={{
+                                    left: `${month.weekIndex * (14 + 3)}px`, // 14px width + 3px gap (approx)
+                                    position: 'absolute'
+                                }}
+                            >
+                                {month.name}
+                            </span>
+                        ))}
+                    </div>
+
+                    <div className="flex gap-[3px] min-w-max">
+                        {/* Day Labels (Mon, Wed, Fri) */}
+                        <div className="flex flex-col gap-[3px] pr-2 justify-between text-[9px] font-bold text-muted-foreground/60 py-[1px] relative -mt-5 pt-7">
+                            <span className="h-[12px] sm:h-[13px]"></span>
+                            <span className="h-[12px] sm:h-[13px] flex items-center">Mon</span>
+                            <span className="h-[12px] sm:h-[13px]"></span>
+                            <span className="h-[12px] sm:h-[13px] flex items-center">Wed</span>
+                            <span className="h-[12px] sm:h-[13px]"></span>
+                            <span className="h-[12px] sm:h-[13px] flex items-center">Fri</span>
+                            <span className="h-[12px] sm:h-[13px]"></span>
                         </div>
-                    ))}
+
+                        {weeksData.map((week, wIndex) => (
+                            <div key={wIndex} className="flex flex-col gap-[3px]">
+                                {week.map((day, dIndex) => (
+                                    <div
+                                        key={day.date}
+                                        title={`${day.active ? 'Approved' : 'No activity'} on ${day.formattedDate}`}
+                                        className={`
+                                            w-[12px] h-[12px] sm:w-[13px] sm:h-[13px] rounded-[2px] 
+                                            transition-all duration-200
+                                            ${day.active
+                                                ? 'bg-[#2da44e] dark:bg-[#39d353] shadow-sm' // GitHub Green (Light/Dark)
+                                                : day.isFuture
+                                                    ? 'opacity-0'
+                                                    : 'bg-border/30 dark:bg-zinc-800' // Empty Cell
+                                            }
+                                        `}
+                                    />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Legend */}
-            <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-1">
-                        <span className="w-2 h-2 bg-neutral-200 dark:bg-[#161b22] rounded-[1px]"></span> Inactive
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <span className="w-2 h-2 bg-primary rounded-[1px]"></span> Shipped
-                    </div>
+            {/* Footer Legend */}
+            <div className="flex items-center justify-end gap-3 text-[10px] text-muted-foreground">
+                <span>Inactive</span>
+                <div className="flex gap-1">
+                    <div className="w-3 h-3 rounded-[2px] bg-border/30 dark:bg-zinc-800" />
+                    <div className="w-3 h-3 rounded-[2px] bg-[#2da44e] dark:bg-[#39d353]" />
                 </div>
+                <span>Active</span>
             </div>
-        </div >
+        </div>
     );
 };
 

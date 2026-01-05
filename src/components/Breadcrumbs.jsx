@@ -20,12 +20,12 @@ const Breadcrumbs = ({ items }) => {
                     {item.href ? (
                         <Link
                             href={item.href}
-                            className="hover:text-foreground transition-colors font-medium"
+                            className="hover:text-foreground transition-colors font-medium opacity-60 hover:opacity-100"
                         >
                             {item.label}
                         </Link>
                     ) : (
-                        <span className="text-foreground font-bold">{item.label}</span>
+                        <span className="text-foreground font-black tracking-tight">{item.label}</span>
                     )}
                 </React.Fragment>
             ))}

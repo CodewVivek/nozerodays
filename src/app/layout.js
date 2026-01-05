@@ -1,7 +1,9 @@
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import SponsorCard from "../components/SponsorCard";
+import AuthSync from "../components/AuthSync";
 import { ThemeProvider } from "../components/ThemeProvider";
+import { ToastProvider } from "../components/Toast";
 import {
   Plus,
   Zap,
@@ -11,6 +13,7 @@ import {
   Megaphone,
   Volume2
 } from "lucide-react";
+import { XIcon } from "../components/Icons";
 
 export const metadata = {
   metadataBase: new URL("https://nozerodays.com"),
@@ -50,30 +53,83 @@ export const metadata = {
   },
 };
 
+import ReviewPendingModal from "../components/ReviewPendingModal";
+
+// ... (other imports)
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-background text-foreground min-h-screen">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
+        <ToastProvider>
+          <AuthSync />
+          <ReviewPendingModal />
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
 
-            <main className="flex-1 max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-8">
-              {children}
-            </main>
+              <main className="flex-1 max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-20 pb-8">
+                {children}
+              </main>
 
-            <footer className="py-12 border-t border-border mt-auto">
-              <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-secondary text-xs font-medium">
-                <div>&copy; 2026 NoZeroDays. All rights reserved.</div>
-                <div className="flex gap-6">
-                  <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
-                  <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
-                  <a href="https://x.com/nozerodays" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">X</a>
+              <footer className="py-20 border-t border-border bg-card/20 mt-auto">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
+                    {/* Brand Section */}
+                    <div className="md:col-span-2 space-y-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center">
+                          <div className="w-1 h-5 bg-primary rotate-[35deg] rounded-full" />
+                        </div>
+                        <span className="font-black text-xl tracking-tighter">NoZeroDays</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+                        The accountability engine for builders. Track your streak, focus on the work, and build something meaningful. Every day is a day to ship.
+                      </p>
+                    </div>
+
+                    {/* Quick Links */}
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Platform</h4>
+                      <ul className="space-y-3 text-sm font-medium">
+                        <li><a href="/" className="hover:text-primary transition-colors text-muted-foreground">Leaderboard</a></li>
+                        <li><a href="/admin" className="hover:text-primary transition-colors text-muted-foreground">Admin Console</a></li>
+                        <li><a href="/settings" className="hover:text-primary transition-colors text-muted-foreground">Settings</a></li>
+                      </ul>
+                    </div>
+
+                    {/* Legal */}
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Legal</h4>
+                      <ul className="space-y-3 text-sm font-medium">
+                        <li><a href="/privacy" className="hover:text-primary transition-colors text-muted-foreground">Privacy Policy</a></li>
+                        <li><a href="/terms" className="hover:text-primary transition-colors text-muted-foreground">Terms of Service</a></li>
+                        <li>
+                          <a
+                            href="https://x.com/nozerodays"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 hover:text-primary transition-colors text-muted-foreground"
+                          >
+                            <XIcon className="w-3.5 h-3.5" />
+                            @nozerodays
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="pt-8 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] font-bold text-muted-foreground/50 uppercase tracking-widest">
+                    <div>&copy; 2026 NoZeroDays Engine. All rights reserved.</div>
+                    <div className="flex items-center gap-2 text-primary">
+                      Built for the 𝕏 generation
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </footer>
-          </div>
-        </ThemeProvider>
+              </footer>
+            </div>
+          </ThemeProvider>
+        </ToastProvider>
       </body>
     </html>
   );

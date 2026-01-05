@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
-import { Share, Twitter } from 'lucide-react';
+import { Share } from 'lucide-react';
+import { XIcon } from './Icons';
 
 const ShareStreakButton = ({ username, streak }) => {
 
@@ -15,9 +16,9 @@ const ShareStreakButton = ({ username, streak }) => {
     return (
         <button
             onClick={handleShare}
-            className="px-4 py-2 rounded-xl bg-[#1DA1F2] text-white font-bold text-sm hover:bg-[#1a8cd8] transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95"
+            className="px-4 py-2 rounded-xl bg-foreground text-background font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-foreground/5 active:scale-95"
         >
-            <Twitter size={16} fill="currentColor" />
+            <XIcon className="w-4 h-4" />
             Share Streak
         </button>
     );

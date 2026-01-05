@@ -3,21 +3,18 @@ import { notFound } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import ActivityHeatmap from '../../components/ActivityHeatmap';
-import ShipFeed from '../../components/ShipFeed';
+import ProgressFeed from '../../components/ProgressFeed';
 import ShareStreakButton from '../../components/ShareStreakButton';
-import { Trophy, TrendingUp, Zap, Calendar } from 'lucide-react';
-// ... (existing imports)
-
-// ...
-
+import EditProfileButton from '../../components/EditProfileButton';
+import ProfileHeader from '../../components/ProfileHeader';
+import { Trophy, TrendingUp, Zap, Calendar, Github, CheckCircle, Activity, BarChart2 } from 'lucide-react';
+import { XIcon, VerifiedBadge } from '../../components/Icons';
 
 // Force dynamic rendering since we depend on params
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }) {
-    // Wait for params
     const { username } = await params;
-
     return {
         title: `${username} | NoZeroDays Profile`,
         description: `Check out ${username}'s build-in-public consistency streak on NoZeroDays.`,
@@ -29,7 +26,6 @@ export async function generateMetadata({ params }) {
 }
 
 const ProfilePage = async ({ params }) => {
-    // Wait for params
     const { username } = await params;
 
     // 1. Fetch User (Case-insensitive)
@@ -52,116 +48,105 @@ const ProfilePage = async ({ params }) => {
         .order('post_day_utc', { ascending: false });
 
     const safeUpdates = updates || [];
-
-    // Calculate derived stats
-    // (In a real app, 'total_ships' might be a column, but we can also count here)
     const totalShips = user.total_ships || safeUpdates.length;
+    const displayProfile = user;
 
-    // Avatar Logic: Use DB url or DiceBear fallback (Shapes for purely abstract, modern look)
-    const avatarSource = user.avatar_url || `https://api.dicebear.com/9.x/shapes/svg?seed=${user.username}`;
+    // 3. Calculate Rank
+    const { count: higherStreakCount } = await supabase
+        .from('users')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'approved')
+        .gt('current_streak', user.current_streak);
+
+    const rank = (higherStreakCount || 0) + 1;
 
     return (
-        <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-500 py-12 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-500 pt-4 pb-8 px-4 sm:px-6">
 
-            {/* Header Section */}
-            <div>
-                <Breadcrumbs items={[
-                    { label: 'profile' },
-                    { label: user.username, href: `/${user.username}` }
-                ]} />
+            <ProfileHeader
+                initialProfile={displayProfile}
+            />
 
-                <div className="flex flex-col md:flex-row gap-8 items-start mt-6">
-                    {/* Avatar */}
-                    <div className="relative group flex-shrink-0">
-                        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-background shadow-xl overflow-hidden bg-muted/10">
-                            <img src={avatarSource} alt={user.username} className="w-full h-full object-cover" />
-                        </div>
-                        {/* Status Indicator */}
-                        <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 border-4 border-background rounded-full" title="Active Builder"></div>
+            <div className="w-full h-px bg-border/60" />
+
+            {/* Minimalist Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* 1. Global Rank (was Current Streak) */}
+                <div className="col-span-2 md:col-span-1 p-6 rounded-3xl bg-card border border-border/50 flex flex-col justify-between group hover:border-foreground/20 transition-all">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Zap size={16} strokeWidth={2.5} />
+                        <span className="text-xs font-bold uppercase tracking-wider">Global Rank</span>
                     </div>
+                    <div className="mt-4">
+                        <span className="text-5xl font-black tracking-tighter text-foreground block">
+                            #{rank}
+                        </span>
+                        <span className="text-xs text-muted-foreground font-medium">Current Streak: {user.current_streak} days</span>
+                    </div>
+                </div>
 
-                    {/* Info */}
-                    <div className="flex-1 space-y-4 pt-2">
-                        <div>
-                            <h1 className="text-3xl font-black tracking-tight text-foreground">{user.display_name || user.username}</h1>
-                            <p className="text-lg text-muted-foreground font-medium">@{user.username}</p>
-                        </div>
+                {/* 2. Longest Streak */}
+                <div className="p-6 rounded-3xl bg-card border border-border/50 flex flex-col justify-between group hover:border-foreground/20 transition-all">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Trophy size={16} strokeWidth={2.5} />
+                        <span className="text-xs font-bold uppercase tracking-wider">Metric Best</span>
+                    </div>
+                    <div className="mt-4">
+                        <span className="text-4xl font-black tracking-tighter text-foreground block">
+                            {user.longest_streak}
+                        </span>
+                        <span className="text-xs text-muted-foreground font-medium">Days High</span>
+                    </div>
+                </div>
 
-                        {user.bio && <p className="text-muted-foreground leading-relaxed max-w-xl text-sm">{user.bio}</p>}
+                {/* 3. Total Posts (Twitter) */}
+                <div className="p-6 rounded-3xl bg-card border border-border/50 flex flex-col justify-between group hover:border-foreground/20 transition-all">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <BarChart2 size={16} strokeWidth={2.5} />
+                        <span className="text-xs font-bold uppercase tracking-wider">Total Posts</span>
+                    </div>
+                    <div className="mt-4">
+                        <span className="text-4xl font-black tracking-tighter text-foreground block">
+                            {(user.twitter_tweets || 0).toLocaleString()}
+                        </span>
+                        <span className="text-xs text-muted-foreground font-medium">Lifetime Tweets</span>
+                    </div>
+                </div>
 
-                        <div className="flex flex-wrap gap-3 pt-2">
-                            <ShareStreakButton username={user.username} streak={user.current_streak} />
-
-                            <a
-                                href={`https://x.com/${user.username}`}
-                                target="_blank"
-                                className="px-4 py-2 rounded-xl border border-border bg-card hover:bg-muted/10 text-foreground font-semibold text-sm transition-colors flex items-center gap-2"
-                            >
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zl-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                                X (Twitter)
-                            </a>
-                        </div>
+                {/* 4. Social Impact (Followers) */}
+                <div className="p-6 rounded-3xl bg-card border border-border/50 flex flex-col justify-between group hover:border-foreground/20 transition-all">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <XIcon className="w-4 h-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Audience</span>
+                    </div>
+                    <div className="mt-4">
+                        <span className="text-4xl font-black tracking-tighter text-foreground block">
+                            {(user.twitter_followers || 0).toLocaleString()}
+                        </span>
+                        <span className="text-xs text-muted-foreground font-medium">Followers</span>
                     </div>
                 </div>
             </div>
 
-            <div className="w-full h-px bg-border" />
-
-            {/* Stats Grid - Clean & Minimal */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <StatCard
-                    label="Current Streak"
-                    value={user.current_streak}
-                    suffix="days"
-                    indicatorColor="bg-orange-500"
-                />
-                <StatCard
-                    label="Longest Streak"
-                    value={user.longest_streak}
-                    suffix="days"
-                    indicatorColor="bg-blue-500"
-                />
-                <StatCard
-                    label="Total Ships"
-                    value={totalShips}
-                    suffix="updates"
-                    indicatorColor="bg-green-500"
-                />
-            </div>
-
-            {/* Consistency Heatmap */}
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold flex items-center gap-2">
-                        <Calendar className="text-foreground" size={20} />
-                        Consistency Grid
+            {/* Execution History (Heatmap) */}
+            <div className="space-y-8">
+                <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                    <h2 className="text-2xl font-black italic tracking-tight flex items-center gap-3">
+                        <Calendar className="text-primary" size={24} />
+                        Execution History
                     </h2>
                 </div>
 
-                <div className="p-6 bg-card border border-border rounded-2xl shadow-sm">
-                    <ActivityHeatmap userUpdates={safeUpdates} />
+                <div className="space-y-12">
+                    <div className="p-6 border border-border rounded-3xl bg-card/50 shadow-sm">
+                        <ActivityHeatmap updates={safeUpdates} />
+                    </div>
+                    <ProgressFeed updates={safeUpdates} />
                 </div>
             </div>
 
-            {/* History Feed */}
-            <div className="max-w-3xl">
-                <ShipFeed updates={safeUpdates} />
-            </div>
         </div>
     );
 };
-
-const StatCard = ({ label, value, suffix, indicatorColor }) => (
-    <div className="p-6 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-between h-32 hover:border-foreground/20 transition-colors cursor-default">
-        <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${indicatorColor}`} />
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{label}</span>
-        </div>
-        <div>
-            <span className="text-4xl font-black tracking-tighter text-foreground">{value}</span>
-            <span className="text-sm text-muted-foreground font-medium ml-1">{suffix}</span>
-        </div>
-    </div>
-);
 
 export default ProfilePage;
