@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { PlusCircle, Search, HelpCircle } from "lucide-react";
 import Leaderboard from "../../components/Leaderboard";
 import SubmitModal from "../../components/SubmitModal";
 import HowItWorksModal from "../../components/HowItWorksModal";
+import { MovingBorderButton } from "../../components/ui/moving-border-button";
 import { supabase } from "../../lib/supabase";
 
 export default function Home() {
@@ -15,16 +15,18 @@ export default function Home() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setUser(session?.user || null);
     };
 
     checkUser();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
     });
 
@@ -34,79 +36,84 @@ export default function Home() {
   return (
     <>
       <div className="space-y-6 animate-in">
-        <div className="text-center pb-8">
-          <div className="space-y-4 mb-8">
-            <h1
-              className="text-4xl font-black tracking-tighter sm:text-7xl uppercase italic"
-              style={{ color: "var(--foreground)" }}
-            >
+        {/* HERO */}
+        <div className="text-center pb-8 space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-black tracking-tighter sm:text-7xl uppercase italic">
               NoZeroDays
             </h1>
 
-            <p
-              className="text-lg sm:text-xl max-w-lg mx-auto leading-relaxed"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              The most consistent builders on X. Ranked by discipline and daily execution.
+            <h2 className="text-lg sm:text-lg font-bold uppercase tracking-wide max-w-xl mx-auto text-muted-foreground">
+              Connect your X account — we’ll automatically track your daily building in public updates.
+            </h2>
+          </div>
+
+          {/* SEARCH + JOIN */}
+          <div className="flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-center w-full">
+              <div className="relative w-full sm:w-[420px]">
+                <div className="relative flex items-center bg-card border border-border rounded-2xl shadow-sm">
+                  <Search
+                    className="absolute left-4 text-muted-foreground"
+                    size={18}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Find a builder by username…"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-11 pr-4 py-4 bg-transparent outline-none font-medium text-center sm:text-left"
+                  />
+                </div>
+              </div>
+
+              {!user && (
+                <button
+                  onClick={() => setIsSubmitModalOpen(true)}
+                  className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-foreground text-background font-black shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-lg"
+                >
+                  <PlusCircle size={20} />
+                  Join
+                </button>
+              )}
+            </div>
+
+            <p className="text-xs text-muted-foreground text-center">
+              Track real builders shipping every day
             </p>
           </div>
 
-          {/* Search + Join */}
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-            {/* Premium Search */}
-            <div className="relative group w-full sm:w-[420px]">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-cyan-500/30 rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition" />
-              <div className="relative flex items-center bg-card border border-border rounded-2xl shadow-sm group-focus-within:ring-4 group-focus-within:ring-primary/10">
-                <Search
-                  className="absolute left-4 text-muted-foreground"
-                  size={18}
-                />
-                <input
-                  type="text"
-                  placeholder="Find a builder by username…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-11 pr-4 py-4 bg-transparent outline-none font-medium text-center sm:text-left"
-                />
-              </div>
-            </div>
-
-            {/* JOIN BUTTON - Only show if user is not logged in */}
-            {!user && (
-              <button
-                onClick={() => setIsSubmitModalOpen(true)}
-                className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-foreground text-background hover:opacity-90 font-black shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-lg border border-border"
-              >
-                <PlusCircle size={20} />
-                Join
-              </button>
-            )}
-
-            {/* How It Works Button (Icon only on mobile, text on desktop?) or just icon? */}
-            <button
+          {/* HOW IT WORKS */}
+          <div className="flex justify-center pt-2">
+            <MovingBorderButton
+              borderRadius="1.75rem"
+              className="bg-background text-foreground border-neutral-200 dark:border-slate-800"
               onClick={() => setIsHowItWorksOpen(true)}
-              className="flex items-center gap-2 px-6 py-4 rounded-2xl border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground font-bold transition-all"
-              title="How it works"
             >
-              <HelpCircle size={20} />
-              <span className="hidden sm:inline">How it works</span>
-            </button>
+              <div className="px-8 py-2 flex items-center gap-2 font-bold uppercase tracking-widest text-sm">
+                <HelpCircle size={18} className="text-primary" />
+                <span>How It Works</span>
+              </div>
+            </MovingBorderButton>
           </div>
         </div>
 
+        {/* LEADERBOARD */}
         <Leaderboard searchQuery={searchQuery} />
       </div>
 
-      {/* JOIN / LOGIN MODAL */}
       <SubmitModal
         isOpen={isSubmitModalOpen}
         onClose={() => setIsSubmitModalOpen(false)}
       />
 
-      {/* HOW IT WORKS MODAL */}
       <HowItWorksModal
         isOpen={isHowItWorksOpen}
         onClose={() => setIsHowItWorksOpen(false)}
+        onJoin={() => {
+          setIsHowItWorksOpen(false);
+          setIsSubmitModalOpen(true);
+        }}
       />
     </>
   );

@@ -205,7 +205,7 @@ const Leaderboard = ({ searchQuery = "" }) => {
                                     </div>
                                     <p className="text-slate-900 dark:text-white font-black text-xs uppercase tracking-tight">Sync Deadline</p>
                                 </div>
-                                <p>Streaks are calculated on a rolling 24h cycle. Post your update to 𝕏 before the timer hits zero to keep your streak alive!</p>
+                                <p>Streaks are calculated on a rolling 24h UTC cycle. You have a 12-hour grace period after midnight to keep your streak alive!</p>
                                 <div className="absolute bottom-full right-8 -mb-1 border-[6px] border-transparent border-b-white dark:border-b-[#1d2126]"></div>
                             </div>
                         </div>
@@ -249,7 +249,7 @@ const Leaderboard = ({ searchQuery = "" }) => {
                                             <div>
                                                 <div className="font-bold text-foreground group-hover/link:text-primary transition-colors flex items-center gap-1">
                                                     {user.display_name || user.username}
-                                                    {(user.is_verified || user.is_admin) && (
+                                                    {(user.is_verified || user.is_admin || user.status === 'approved') && (
                                                         <div title="Verified User">
                                                             <VerifiedBadge className="w-3.5 h-3.5 flex-shrink-0" />
                                                         </div>

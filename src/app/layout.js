@@ -64,7 +64,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-background text-foreground min-h-screen">
-     <Script
+        <Script
           defer
           src="https://datalaunch.vercel.app/track.js"
           data-site-id="ba842eb5-ca56-4da3-a40a-654a43a58c0d"
@@ -101,7 +101,7 @@ export default function RootLayout({ children }) {
                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Platform</h4>
                       <ul className="space-y-3 text-sm font-medium">
                         <li><a href="/" className="hover:text-primary transition-colors text-muted-foreground">Leaderboard</a></li>
-                        <li><a href="/admin" className="hover:text-primary transition-colors text-muted-foreground">Admin Console</a></li>
+                        <li><a href="/how-it-works" className="hover:text-primary transition-colors text-muted-foreground">How It Works</a></li>
                         <li><a href="/settings" className="hover:text-primary transition-colors text-muted-foreground">Settings</a></li>
                       </ul>
                     </div>
@@ -114,13 +114,13 @@ export default function RootLayout({ children }) {
                         <li><a href="/terms" className="hover:text-primary transition-colors text-muted-foreground">Terms of Service</a></li>
                         <li>
                           <a
-                            href="https://x.com/nozerodays"
+                            href="https://x.com/vweekk_"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 hover:text-primary transition-colors text-muted-foreground"
                           >
                             <XIcon className="w-3.5 h-3.5" />
-                            @nozerodays
+                            @vweekk_
                           </a>
                         </li>
                       </ul>

@@ -1,129 +1,108 @@
 export default function PrivacyPage() {
     return (
         <main className="max-w-4xl mx-auto px-6 py-24 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            <div className="space-y-16">
-                <header className="space-y-6">
-                    <h1 className="text-5xl sm:text-6xl font-black tracking-tight uppercase italic">
+            <div className="space-y-12">
+                <header className="space-y-6 pb-8 border-b border-border/40">
+                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
                         Privacy Policy
                     </h1>
-                    <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-muted-foreground">
-                        <span className="w-12 h-px bg-border"></span>
-                        Last updated: January 2026
-                    </div>
+                    <p className="text-muted-foreground font-medium">
+                        Last Updated: January 6, 2026
+                    </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-border/40 pt-12">
-                    <aside className="space-y-4">
-                        <h2 className="text-sm font-black uppercase tracking-[0.2em] text-primary">
-                            Data Philosophy
-                        </h2>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            We build in public. Our privacy policy reflects that transparency.
-                            We protect your private credentials while showcasing your public achievements.
+                <section className="prose prose-neutral dark:prose-invert max-w-none text-muted-foreground leading-relaxed space-y-8">
+                    <div>
+                        <p>
+                            At NoZeroDays ("we", "us", "our"), we respect your privacy and are committed to protecting the personal information you share with us. This Privacy Policy outlines our practices regarding the collection, use, and disclosure of your information.
                         </p>
-                    </aside>
+                    </div>
 
-                    <section className="md:col-span-2 space-y-12 text-muted-foreground leading-relaxed">
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                1. Information We Collect
-                            </h3>
-                            <p>
-                                <strong>Account Info:</strong> When you sign in via X (Twitter), we collect your username, display name, profile image, and public bio.
-                            </p>
-                            <p>
-                                <strong>Activity Data:</strong> We track your streaks, "ships" (updates), and engagement metrics. This data is public by default—that is the core purpose of the platform.
-                            </p>
-                            <p>
-                                <strong>Payment Info:</strong> If you purchase a sponsorship, your payment is processed by our secure merchant of record (Dodo Payments). We <strong>do not</strong> store your credit card numbers. We only retain transaction status and sponsorship details.
-                            </p>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">1. Information We Collect</h3>
+                        <ul className="list-disc pl-5 space-y-2">
+                            <li><strong>Authentication Data:</strong> When you log in via X (formerly Twitter), we collect your public profile information (username, display name, profile image URL). We store your unique X user ID to maintain your session.</li>
+                            <li><strong>Public Activity Data:</strong> The core function of our platform is to aggregate and display publicly available information from X. We collect data related to your posts (timestamps, content snippets) to verify and calculate your "streaks". This information is already public by nature.</li>
+                            <li><strong>Payment Information:</strong> If you purchase a sponsorship, your billing information is processed by our Merchant of Record, Dodo Payments. We do not store full credit card numbers on our servers; we only retain transaction identifiers and status.</li>
+                            <li><strong>Usage Data:</strong> We may collect anonymous analytical data (e.g., page views, feature usage) to improve platform performance.</li>
+                        </ul>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                2. How We Use Your Data
-                            </h3>
-                            <ul className="list-disc pl-5 space-y-2">
-                                <li>To verify your identity and prevent fraud.</li>
-                                <li>To display your progress on public leaderboards.</li>
-                                <li>To process sponsorship transactions and display ads.</li>
-                                <li>To improve platform stability and fix bugs.</li>
-                            </ul>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">2. How We Use Your Information</h3>
+                        <p>We use the collected data for the following purposes:</p>
+                        <ul className="list-disc pl-5 space-y-2 mt-2">
+                            <li>To provide and maintain the Service (e.g., calculating streaks, updating leaderboards).</li>
+                            <li>To process payments and manage sponsorship slots.</li>
+                            <li>To detect and prevent fraud or abuse (e.g., identifying bot activity).</li>
+                            <li>To communicate with you regarding your account or critical system updates.</li>
+                        </ul>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                3. Public Visibility
-                            </h3>
-                            <p>
-                                <strong>By using NoZeroDays, you acknowledge that your profile and streaks are public.</strong>
-                                Anyone on the internet can view your consistency graph. Do not post private or sensitive information in your daily updates.
-                            </p>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">3. Data Sharing and Disclosure</h3>
+                        <p>
+                            We do not sell your personal data. We may share information with trusted third-party service providers solely for the purpose of operating the Platform:
+                        </p>
+                        <ul className="list-disc pl-5 space-y-2 mt-2">
+                            <li><strong>Supabase:</strong> For database hosting and authentication services.</li>
+                            <li><strong>Vercel:</strong> For web hosting and infrastructure.</li>
+                            <li><strong>Dodo Payments:</strong> For payment processing.</li>
+                        </ul>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                4. Third-Party Services
-                            </h3>
-                            <p>
-                                We utilize trusted third-party vendors:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-2">
-                                <li><strong>Supabase:</strong> Database and Authentication services.</li>
-                                <li><strong>Dodo Payments:</strong> Payment processing and merchant of record.</li>
-                                <li><strong>Vercel:</strong> Hosting and infrastructure.</li>
-                            </ul>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">4. Data Retention</h3>
+                        <p>
+                            We retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy.
+                        </p>
+                        <ul className="list-disc pl-5 space-y-2 mt-2">
+                            <li><strong>Account Data:</strong> Retained as long as your account is active.</li>
+                            <li><strong>Transaction Data:</strong> Retained for tax and accounting purposes as required by law.</li>
+                        </ul>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                5. Cookies & Tracking
-                            </h3>
-                            <p>
-                                We use essential cookies to maintain your login session. We do not use third-party ad-tracking cookies. Analytics are privacy-preserving and aggregated.
-                            </p>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">5. Your Rights (GDPR & CCPA)</h3>
+                        <p>Depending on your location, you may have the following rights:</p>
+                        <ul className="list-disc pl-5 space-y-2 mt-2">
+                            <li><strong>The right to access:</strong> You can request copies of your personal data.</li>
+                            <li><strong>The right to rectification:</strong> You can request correction of inaccurate data.</li>
+                            <li><strong>The right to erasure ("Right to be Forgotten"):</strong> You can request that we delete your account and associated data.</li>
+                            <li><strong>The right to restrict processing:</strong> You can object to our processing of your data.</li>
+                        </ul>
+                        <p className="mt-2">
+                            To exercise these rights, please contact us at support@nozerodays.com.
+                        </p>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                6. Your Rights
-                            </h3>
-                            <p>
-                                You have the right to:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-2">
-                                <li><strong>Access:</strong> View all data we hold about you.</li>
-                                <li><strong>Rectify:</strong> Correct inaccurate information.</li>
-                                <li><strong>Delete:</strong> Request complete account deletion. This will remove your streaks and history permanently.</li>
-                            </ul>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">6. Security</h3>
+                        <p>
+                            We prioritize the security of your data using industry-standard encryption (SSL/TLS) during transmission and secure storage practices. However, no method of transmission over the Internet is 100% secure.
+                        </p>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                7. Contact Us
-                            </h3>
-                            <p>
-                                For privacy concerns or deletion requests, please contact the admin directly via X (Twitter) or email support.
-                            </p>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">7. International Data Transfers</h3>
+                        <p>
+                            Your information, including Personal Data, may be transferred to — and maintained on — computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ (e.g., servers in the United States). By using the service, you consent to this transfer.
+                        </p>
+                    </div>
 
-                        <div className="space-y-4 text-foreground font-medium italic border-l-2 border-primary pl-6">
-                            “Your trust is our most valuable asset. We treat it with respect.”
-                        </div>
-                    </section>
-                </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground mb-4">8. Changes to This Privacy Policy</h3>
+                        <p>
+                            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.
+                        </p>
+                    </div>
 
-                <footer className="pt-16 border-t border-border/40">
-                    <a
-                        href="/"
-                        className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest hover:text-primary transition-colors"
-                    >
-                        <span className="transition-transform group-hover:-translate-x-1">
-                            ←
-                        </span>
-                        Back to Cockpit
-                    </a>
-                </footer>
+                    <div className="pt-8 border-t border-border/40">
+                        <p className="text-sm">
+                            <strong>Contact Us:</strong> If you have any questions about this Privacy Policy, please contact us at support@nozerodays.com.
+                        </p>
+                    </div>
+                </section>
             </div>
         </main>
     );
