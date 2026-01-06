@@ -57,6 +57,7 @@ export const metadata = {
 
 import ReviewPendingModal from "../components/ReviewPendingModal";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next"
 
 // ... (other imports)
 
@@ -138,6 +139,7 @@ export default function RootLayout({ children }) {
             </div>
           </ThemeProvider>
         </ToastProvider>
+        <Analytics />
       </body>
     </html>
   );
