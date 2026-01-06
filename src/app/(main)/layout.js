@@ -18,20 +18,26 @@ export default function MainLayout({ children }) {
                 .select('*')
                 .eq('status', 'active')
                 .order('created_at', { ascending: false });
-            if (data) setSponsors(data);
+            if (data) setSponsors(data.slice(0, 9)); // Limit to 9 active sponsors
         };
         fetchSponsors();
     }, []);
 
     // Split sponsors between left and right columns
-    const totalSlots = 8;
-    // Left has 1 static (Launchit) + 3 dynamic slots = 4 visible
-    // Right has 5 dynamic slots
-    // We'll distribute active sponsors.
+    // Left Limit: 4 Dynamic (plus 1 static = 5 total)
+    // Right Limit: 5 Dynamic
+    const leftSponsors = [];
+    const rightSponsors = [];
 
-    // Simple distribution: alternates
-    const leftSponsors = sponsors.filter((_, i) => i % 2 === 0);
-    const rightSponsors = sponsors.filter((_, i) => i % 2 !== 0);
+    sponsors.forEach((sponsor, index) => {
+        // Alternate: Evens to Left, Odds to Right
+        // BUT if Left is full (4), put in Right.
+        if (leftSponsors.length < 4 && (index % 2 === 0 || rightSponsors.length >= 5)) {
+            leftSponsors.push(sponsor);
+        } else {
+            rightSponsors.push(sponsor);
+        }
+    });
 
     const renderPlaceholder = (key) => (
         <SponsorCard

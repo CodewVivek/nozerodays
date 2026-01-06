@@ -254,6 +254,23 @@ const AdminDashboard = () => {
         finally { setActionLoading(null); }
     };
 
+    const handleSponsorReject = async (id) => {
+        setActionLoading(id);
+        try {
+            await supabase.from('sponsors').update({ status: 'rejected' }).eq('id', id);
+            await fetchSponsors();
+        } finally { setActionLoading(null); }
+    };
+
+    const handleSponsorDelete = async (id) => {
+        if (!confirm("Are you sure you want to delete this sponsor request completely?")) return;
+        setActionLoading(id);
+        try {
+            await supabase.from('sponsors').delete().eq('id', id);
+            await fetchSponsors();
+        } finally { setActionLoading(null); }
+    };
+
     const handleSponsorApprove = async (id) => {
         setActionLoading(id);
         try {
@@ -309,7 +326,7 @@ const AdminDashboard = () => {
         { id: TABS.OVERVIEW, label: 'Overview', icon: LayoutDashboard },
         { id: TABS.APPROVALS, label: 'Approvals', icon: UserCheck, count: pendingUsers.length + pendingUpdates.length },
         { id: TABS.BUILDERS, label: 'Builders', icon: Users },
-        { id: TABS.SPONSORS, label: 'Sponsors', icon: Megaphone, count: sponsors.filter(s => s.status !== 'active').length }
+        { id: TABS.SPONSORS, label: 'Sponsors', icon: Megaphone, count: sponsors.filter(s => s.status === 'pending_payment').length }
     ];
 
     return (
@@ -553,20 +570,55 @@ const AdminDashboard = () => {
                     )}
 
                     {activeTab === TABS.SPONSORS && (
-                        <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
-                            <Section title="Sponsorship Queue" color="bg-purple-500">
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
+                            {/* Pending Requests */}
+                            <Section title="New Requests (Check Payment)" color="bg-yellow-500">
                                 <div className="divide-y divide-border/50">
-                                    {sponsors.filter(s => s.status !== 'active').map(s => (
+                                    {sponsors.filter(s => s.status === 'pending_payment').map(s => (
                                         <div key={s.id} className="p-8 flex items-center justify-between gap-6 hover:bg-muted/10 transition-colors">
-                                            <div className="space-y-1">
-                                                <h4 className="text-xl font-black italic tracking-tight">{s.title}</h4>
-                                                <p className="text-sm text-muted-foreground max-w-lg">{s.description}</p>
+                                            <div className="flex items-center gap-4">
+                                                {s.image_url && <img src={s.image_url} className="w-16 h-16 rounded-xl object-cover border border-border" />}
+                                                <div className="space-y-1">
+                                                    <h4 className="text-xl font-black italic tracking-tight">{s.title}</h4>
+                                                    <a href={s.target_url} target="_blank" className="text-xs text-primary hover:underline">{s.target_url}</a>
+                                                    <p className="text-sm text-muted-foreground max-w-lg mt-2">{s.description}</p>
+                                                    <div className="text-[10px] font-bold uppercase text-yellow-500 bg-yellow-500/10 px-2 py-1 rounded inline-block">Pending Dodo Check</div>
+                                                </div>
                                             </div>
-                                            <button onClick={() => handleSponsorApprove(s.id)} className="px-8 py-4 bg-primary text-background rounded-2xl font-black tracking-widest uppercase text-sm shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-transform">Activate</button>
+                                            <div className="flex gap-3">
+                                                <button onClick={() => handleSponsorDelete(s.id)} className="p-4 text-red-500 hover:bg-red-500/10 rounded-2xl transition-colors"><Trash2 size={20} /></button>
+                                                <button onClick={() => handleSponsorReject(s.id)} className="px-6 py-4 text-red-500 border border-red-500/20 hover:bg-red-500/5 rounded-2xl font-bold uppercase text-sm">Reject</button>
+                                                <button onClick={() => handleSponsorApprove(s.id)} className="px-8 py-4 bg-primary text-background rounded-2xl font-black tracking-widest uppercase text-sm shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-transform">Activate (Paid)</button>
+                                            </div>
                                         </div>
                                     ))}
-                                    {sponsors.filter(s => s.status !== 'active').length === 0 && (
-                                        <div className="p-12 text-center opacity-40 italic font-medium">No new sponsor requests.</div>
+                                    {sponsors.filter(s => s.status === 'pending_payment').length === 0 && (
+                                        <div className="p-12 text-center opacity-40 italic font-medium">No pending requests.</div>
+                                    )}
+                                </div>
+                            </Section>
+
+                            {/* Active Sponsors */}
+                            <Section title="Active Campaigns" color="bg-purple-500">
+                                <div className="divide-y divide-border/50">
+                                    {sponsors.filter(s => s.status === 'active').map(s => (
+                                        <div key={s.id} className="p-8 flex items-center justify-between gap-6 hover:bg-muted/10 transition-colors">
+                                            <div className="flex items-center gap-4">
+                                                {s.image_url && <img src={s.image_url} className="w-16 h-16 rounded-xl object-cover border border-border" />}
+                                                <div className="space-y-1">
+                                                    <h4 className="text-xl font-black italic tracking-tight">{s.title}</h4>
+                                                    <p className="text-sm text-muted-foreground max-w-lg">{s.description}</p>
+                                                    <div className="text-[10px] font-bold uppercase text-green-500 bg-green-500/10 px-2 py-1 rounded inline-block">Live on Site</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-3">
+                                                <button onClick={() => handleSponsorDelete(s.id)} className="p-4 text-red-500 hover:bg-red-500/10 rounded-2xl transition-colors" title="Delete"><Trash2 size={20} /></button>
+                                                <button onClick={() => handleSponsorReject(s.id)} className="px-6 py-4 border border-border hover:bg-muted rounded-2xl font-bold uppercase text-xs text-muted-foreground">Deactivate</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {sponsors.filter(s => s.status === 'active').length === 0 && (
+                                        <div className="p-12 text-center opacity-40 italic font-medium">No active sponsors.</div>
                                     )}
                                 </div>
                             </Section>
