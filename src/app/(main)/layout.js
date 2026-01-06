@@ -7,7 +7,7 @@ import { supabase } from '../../lib/supabase';
 
 export default function MainLayout({ children }) {
     // Dodo Payment Link - Replace with actual link
-    const PAYMENT_LINK = "https://test.checkout.dodopayments.com/buy/pdt_0NVgYOi657FLJ5kbDCjR4?quantity=1";
+    const PAYMENT_LINK = "https://checkout.dodopayments.com/buy/pdt_0NVgu5QBmCLd5Ji8T1QGv?quantity=1";
     const [isSponsorModalOpen, setSponsorModalOpen] = useState(false);
     const [sponsors, setSponsors] = useState([]);
 
