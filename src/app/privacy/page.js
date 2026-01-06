@@ -15,12 +15,11 @@ export default function PrivacyPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-border/40 pt-12">
                     <aside className="space-y-4">
                         <h2 className="text-sm font-black uppercase tracking-[0.2em] text-primary">
-                            Our Promise
+                            Data Philosophy
                         </h2>
                         <p className="text-sm text-muted-foreground leading-relaxed">
-                            We collect the minimum data required to operate a public
-                            accountability platform. No tracking. No selling. No dark
-                            patterns.
+                            We build in public. Our privacy policy reflects that transparency.
+                            We protect your private credentials while showcasing your public achievements.
                         </p>
                     </aside>
 
@@ -30,71 +29,86 @@ export default function PrivacyPage() {
                                 1. Information We Collect
                             </h3>
                             <p>
-                                When you sign in using 𝕏 (formerly Twitter), we collect basic
-                                public profile information including your username, display
-                                name, profile image, bio, and public engagement metadata.
+                                <strong>Account Info:</strong> When you sign in via X (Twitter), we collect your username, display name, profile image, and public bio.
                             </p>
                             <p>
-                                If you voluntarily add links (GitHub, website) or upload a
-                                custom avatar, we store only what you explicitly provide.
+                                <strong>Activity Data:</strong> We track your streaks, "ships" (updates), and engagement metrics. This data is public by default—that is the core purpose of the platform.
                             </p>
-                        </div>
-
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-foreground">
-                                2. Authentication & Permissions
-                            </h3>
                             <p>
-                                NoZeroDays requests <strong>read-only access</strong> to your
-                                𝕏 profile. We do not post tweets, send messages, or perform any
-                                actions on your behalf.
+                                <strong>Payment Info:</strong> If you purchase a sponsorship, your payment is processed by our secure merchant of record (Dodo Payments). We <strong>do not</strong> store your credit card numbers. We only retain transaction status and sponsorship details.
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold text-foreground">
-                                3. Data Storage & Security
+                                2. How We Use Your Data
+                            </h3>
+                            <ul className="list-disc pl-5 space-y-2">
+                                <li>To verify your identity and prevent fraud.</li>
+                                <li>To display your progress on public leaderboards.</li>
+                                <li>To process sponsorship transactions and display ads.</li>
+                                <li>To improve platform stability and fix bugs.</li>
+                            </ul>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                3. Public Visibility
                             </h3>
                             <p>
-                                All data is securely stored using Supabase infrastructure. We
-                                apply industry-standard access controls and encryption. We do
-                                not store passwords.
+                                <strong>By using NoZeroDays, you acknowledge that your profile and streaks are public.</strong>
+                                Anyone on the internet can view your consistency graph. Do not post private or sensitive information in your daily updates.
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold text-foreground">
-                                4. Public Visibility
+                                4. Third-Party Services
                             </h3>
                             <p>
-                                NoZeroDays is a public leaderboard. Your username, streak
-                                count, and submitted updates are visible to other users by
-                                design.
+                                We utilize trusted third-party vendors:
+                            </p>
+                            <ul className="list-disc pl-5 space-y-2">
+                                <li><strong>Supabase:</strong> Database and Authentication services.</li>
+                                <li><strong>Dodo Payments:</strong> Payment processing and merchant of record.</li>
+                                <li><strong>Vercel:</strong> Hosting and infrastructure.</li>
+                            </ul>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-foreground">
+                                5. Cookies & Tracking
+                            </h3>
+                            <p>
+                                We use essential cookies to maintain your login session. We do not use third-party ad-tracking cookies. Analytics are privacy-preserving and aggregated.
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold text-foreground">
-                                5. Data Retention & Deletion
+                                6. Your Rights
                             </h3>
                             <p>
-                                You may request deletion of your account and associated data
-                                at any time. We retain data only as long as necessary to
-                                operate the platform.
+                                You have the right to:
                             </p>
+                            <ul className="list-disc pl-5 space-y-2">
+                                <li><strong>Access:</strong> View all data we hold about you.</li>
+                                <li><strong>Rectify:</strong> Correct inaccurate information.</li>
+                                <li><strong>Delete:</strong> Request complete account deletion. This will remove your streaks and history permanently.</li>
+                            </ul>
                         </div>
 
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold text-foreground">
-                                6. No Sale of Data
+                                7. Contact Us
                             </h3>
                             <p>
-                                We do not sell, rent, or trade your personal data. Ever.
+                                For privacy concerns or deletion requests, please contact the admin directly via X (Twitter) or email support.
                             </p>
                         </div>
 
                         <div className="space-y-4 text-foreground font-medium italic border-l-2 border-primary pl-6">
-                            “Your data exists to track discipline — not to be exploited.”
+                            “Your trust is our most valuable asset. We treat it with respect.”
                         </div>
                     </section>
                 </div>
