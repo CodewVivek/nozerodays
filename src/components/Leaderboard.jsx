@@ -92,7 +92,8 @@ const Leaderboard = ({ searchQuery = "" }) => {
             let query = supabase
                 .from('users')
                 .select('*')
-                .eq('status', 'approved');
+                .eq('status', 'approved')
+                .eq('is_hidden', false);
 
             // Apply search filter if exists
             if (searchQuery && searchQuery.trim() !== "") {

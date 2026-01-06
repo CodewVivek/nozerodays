@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Search, Save, Plus, ArrowUp, ArrowUpRight, Loader2, Check, X, Trash2, CheckCircle, LayoutDashboard, UserCheck, Users, Megaphone, Menu, ExternalLink, BarChart3, TrendingUp as TrendingUpIcon, Calendar, Clock } from 'lucide-react';
+import { Search, Save, Plus, ArrowUp, ArrowUpRight, Loader2, Check, X, Trash2, CheckCircle, LayoutDashboard, UserCheck, Users, Megaphone, Menu, ExternalLink, BarChart3, TrendingUp as TrendingUpIcon, Calendar, Clock, Eye, ViewOff } from 'lucide-react';
 import { ADMIN_HANDLES, ADMIN_EMAIL } from '../lib/constants';
 import { VerifiedBadge } from './Icons';
 
@@ -248,6 +248,17 @@ const AdminDashboard = () => {
                 target_user_id: userId,
                 new_status: !currentStatus
             });
+            if (error) throw error;
+            await fetchUsers();
+        } catch (e) { console.error(e); }
+        finally { setActionLoading(null); }
+    };
+
+    const handleToggleHidden = async (userId, currentStatus) => {
+        setActionLoading(userId);
+        try {
+            // Optimistic update
+            const { error } = await supabase.from('users').update({ is_hidden: !currentStatus }).eq('id', userId);
             if (error) throw error;
             await fetchUsers();
         } catch (e) { console.error(e); }
@@ -554,6 +565,9 @@ const AdminDashboard = () => {
                                                     </td>
                                                     <td className="px-8 py-5 text-right">
                                                         <div className="flex justify-end gap-2">
+                                                            <button onClick={() => handleToggleHidden(user.id, user.is_hidden)} className={`p-2 rounded-xl transition-all ${user.is_hidden ? 'bg-zinc-800 text-zinc-400' : 'bg-muted text-muted-foreground hover:text-foreground'}`} title={user.is_hidden ? "Unhide User" : "Hide from Leaderboard"}>
+                                                                {user.is_hidden ? <ViewOff size={18} /> : <Eye size={18} />}
+                                                            </button>
                                                             <button onClick={() => handleToggleVerification(user.id, user.is_verified)} className={`p-2 rounded-xl transition-all ${user.is_verified ? 'bg-blue-500 text-white' : 'bg-muted text-muted-foreground hover:text-blue-500'}`} title="Toggle Verified Badge"><VerifiedBadge className="w-5 h-5" /></button>
                                                             <button onClick={() => handleUpdateStreak(user, -1)} className="p-2 text-orange-500 hover:bg-orange-500/10 rounded-xl"><ArrowUp size={18} className="rotate-180" /></button>
                                                             <button onClick={() => handleUpdateStreak(user, 1)} className="p-2 text-green-500 hover:bg-green-500/10 rounded-xl"><ArrowUp size={18} /></button>
