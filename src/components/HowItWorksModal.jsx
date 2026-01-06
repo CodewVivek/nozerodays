@@ -1,10 +1,6 @@
 "use client";
 
 import { X, Twitter, Rocket, Trophy } from "lucide-react";
-import { Dialog, DialogContent } from "./ui/dialog"; // Assuming you have shadcn UI, or I'll implement a custom one if not.
-// Actually, looking at other components like SponsorModal, you likely use a custom modal implementation.
-// I will build a self-contained custom modal to match SponsorModal's style.
-
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function HowItWorksModal({ isOpen, onClose }) {
