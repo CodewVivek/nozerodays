@@ -98,7 +98,6 @@ export default function SettingsPage() {
             setFormData(prev => ({ ...prev, avatar_url: publicUrl }));
             showToast('Avatar uploaded! Click Save to apply.', 'success');
         } catch (error) {
-            console.error('Error uploading avatar:', error);
             showToast('Upload failed. Ensure you have an "avatars" bucket in Supabase storage.', 'error');
         } finally {
             setUploading(false);
@@ -127,7 +126,6 @@ export default function SettingsPage() {
             showToast('Settings saved successfully!', 'success');
             fetchProfile(); // Refresh data
         } else {
-            console.error('Error updating profile:', error);
             showToast(`Error: ${error.message}`, 'error');
         }
         setSaving(false);
@@ -164,7 +162,6 @@ export default function SettingsPage() {
                 window.location.href = '/';
             }, 1500);
         } catch (error) {
-            console.error('Error deleting account:', error);
             showToast('Failed to delete account. Please contact support.', 'error');
             setDeleting(false);
         }

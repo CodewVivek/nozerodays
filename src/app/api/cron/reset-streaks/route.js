@@ -99,7 +99,7 @@ export async function GET(request) {
         });
 
     } catch (error) {
-        console.error('Streak Reset Cron Error:', error);
+        // console.error('Streak Reset Cron Error:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

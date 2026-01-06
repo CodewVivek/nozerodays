@@ -154,13 +154,10 @@ const AdminDashboard = () => {
                 setApprovedUsers(prev => [{ ...user, status: 'approved', current_streak: initialStreak }, ...prev]);
                 // Assuming showToast is defined elsewhere, if not, this will cause an error.
                 // For now, we'll just log.
-                console.log(`User approved! Streak set to ${initialStreak}`);
+                // Success
             }
         } catch (error) {
-            console.error("Approval error:", error);
-            // Assuming showToast is defined elsewhere.
-            // For now, we'll just log.
-            console.error(`Failed to approve: ${error.message}`);
+            // Error handling
         } finally { setActionLoading(null); }
     };
 
@@ -187,7 +184,7 @@ const AdminDashboard = () => {
                 }).eq('id', user.id);
             }
             await fetchInitialData();
-        } catch (e) { console.error(e); }
+        } catch (e) { /* Error */ }
         finally { setActionLoading(null); }
     };
 
@@ -196,7 +193,7 @@ const AdminDashboard = () => {
         try {
             await supabase.from('user_updates').update({ review_status: 'rejected' }).eq('id', id);
             await fetchPendingUpdates();
-        } catch (e) { console.error(e); }
+        } catch (e) { /* Error */ }
         finally { setActionLoading(null); }
     };
 
@@ -212,7 +209,6 @@ const AdminDashboard = () => {
             });
 
             if (rpcError) {
-                console.warn("RPC update_streak failed, falling back to direct update:", rpcError);
                 // Fallback: Direct Update (Might fail if RLS is strict, but better than nothing)
                 const newLongest = Math.max(newStreak, user.longest_streak || 0);
                 const { error: directError } = await supabase.from('users').update({
@@ -226,7 +222,6 @@ const AdminDashboard = () => {
 
             await fetchUsers();
         } catch (e) {
-            console.error(e);
             alert("Failed to update streak. Make sure you have run the database-migrations.sql in Supabase!");
         }
         finally { setActionLoading(null); }

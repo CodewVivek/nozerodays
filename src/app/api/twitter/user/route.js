@@ -11,7 +11,7 @@ export async function POST(req) {
         const bearerToken = process.env.TWITTER_BEARER_TOKEN
 
         if (!bearerToken) {
-            console.error('TWITTER_BEARER_TOKEN is not set')
+            // console.error('TWITTER_BEARER_TOKEN is not set')
             return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
         }
 
@@ -27,7 +27,7 @@ export async function POST(req) {
 
         if (!res.ok) {
             const errorData = await res.json()
-            console.error('Twitter API error:', errorData)
+            // console.error('Twitter API error:', errorData)
             return NextResponse.json({ error: 'Twitter API failed' }, { status: res.status })
         }
 
@@ -49,7 +49,7 @@ export async function POST(req) {
             verified: user.verified,
         })
     } catch (err) {
-        console.error('Server error in Twitter API route:', err)
+        // console.error('Server error in Twitter API route:', err)
         return NextResponse.json({ error: 'Server error' }, { status: 500 })
     }
 }

@@ -64,7 +64,8 @@ export default function AuthSync() {
         // ✅ Correct fetch condition: check for null/undefined, not just falsy (0 is valid)
         const SHOULD_FETCH_TWITTER =
             existingUser?.twitter_followers == null ||
-            existingUser?.twitter_tweets == null
+            existingUser?.twitter_tweets == null ||
+            (existingUser?.twitter_followers === 0 && existingUser?.twitter_tweets === 0) // Retry if it failed previously
 
         let stats = null
         if (SHOULD_FETCH_TWITTER) {
@@ -80,7 +81,7 @@ export default function AuthSync() {
                     stats = json.data ?? json
                 }
             } catch {
-                console.warn('Twitter stats fetch failed')
+                // Silent fail
             }
         }
 

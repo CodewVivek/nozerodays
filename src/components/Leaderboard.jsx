@@ -131,7 +131,7 @@ const Leaderboard = ({ searchQuery = "" }) => {
                 setHasMore(false);
             }
         } catch (e) {
-            console.warn("DB not ready or error:", e);
+            // DB error or not ready
             if (pageNum === 0 && (!searchQuery || searchQuery === "")) {
                 const sortedMock = [...STREAK_EXAMPLES].sort((a, b) => b.current_streak - a.current_streak);
                 setUsers(sortedMock);

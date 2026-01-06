@@ -61,7 +61,6 @@ const SponsorModal = ({ isOpen, onClose, paymentLink }) => {
 
             setFormData(prev => ({ ...prev, image_url: publicUrl }));
         } catch (error) {
-            console.error('Error uploading image:', error);
             alert("Upload failed. Make sure the 'sponsor-logos' bucket exists and is public.");
         } finally {
             setUploading(false);
@@ -95,7 +94,6 @@ const SponsorModal = ({ isOpen, onClose, paymentLink }) => {
             window.open(paymentLink, '_blank');
             onClose();
         } catch (error) {
-            console.error('Error saving sponsor:', error);
             alert("Failed to save details. Please try again. " + error.message);
         } finally {
             setLoading(false);

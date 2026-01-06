@@ -13,7 +13,7 @@ export async function POST(request) {
 
 
         if (!bearerToken) {
-            console.error('TWITTER_BEARER_TOKEN is not defined in env');
+            // console.error('TWITTER_BEARER_TOKEN is not defined in env');
             return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         }
 
@@ -29,21 +29,21 @@ export async function POST(request) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Twitter API Error:', response.status, errorText);
+            // console.error('Twitter API Error:', response.status, errorText);
             return NextResponse.json({ error: `Twitter API Error: ${response.status}` }, { status: response.status });
         }
 
         const data = await response.json();
 
         if (data.errors) {
-            console.error('Twitter API Data Errors:', data.errors);
+            // console.error('Twitter API Data Errors:', data.errors);
             return NextResponse.json({ error: 'User not found or suspended' }, { status: 404 });
         }
 
         return NextResponse.json(data.data);
 
     } catch (error) {
-        console.error('Internal Server Error:', error);
+        // console.error('Internal Server Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

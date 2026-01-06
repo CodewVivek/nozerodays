@@ -16,7 +16,7 @@ const EditProfileButton = ({ profileUserId }) => {
                     setIsOwner(true)
                 }
             } catch (e) {
-                console.error(e)
+                // Error checking ownership
             } finally {
                 setLoading(false)
             }
