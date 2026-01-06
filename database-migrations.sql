@@ -85,12 +85,25 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    old_streak int;
 BEGIN
+    -- Get current streak
+    SELECT current_streak INTO old_streak FROM public.users WHERE id = target_user_id;
+
+    -- Update users table
     UPDATE public.users
     SET current_streak = new_streak,
         longest_streak = GREATEST(longest_streak, new_streak),
         last_streak_day_utc = CURRENT_DATE
     WHERE id = target_user_id;
+
+    -- If streak increased, insert historical record for Heatmap
+    IF new_streak > old_streak THEN
+        INSERT INTO public.user_updates (user_id, post_day_utc, post_url, review_status, created_at, reviewed_at)
+        VALUES (target_user_id, CURRENT_DATE, 'https://nozerodays.com/admin-override', 'approved', now(), now())
+        ON CONFLICT (user_id, post_day_utc) DO NOTHING;
+    END IF;
 END;
 $$;
 
@@ -104,41 +117,9 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-
--- Analytics Events Table
-CREATE TABLE IF NOT EXISTS public.analytics_events (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    event_type TEXT NOT NULL,
-    event_data JSONB DEFAULT '{}'::jsonb,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
--- Enable RLS
-ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
-
--- Policy: Admins can view all events
-CREATE POLICY "Admins can view analytics"
-    ON public.analytics_events
-    FOR SELECT
-    USING (
-        auth.jwt() ->> 'email' IN ('vivek@buildinpublic.com', 'admin@nozerodays.com') -- Replace with actual admin emails or logic
-        OR 
-        EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND is_admin = true)
-    );
-
--- Policy: Anon can insert events (via RPC only to be safe, or direct if needed)
--- We will use a secure RPC for insertion to strictly control what gets logged.
-
--- Secure Logging Function
-CREATE OR REPLACE FUNCTION log_analytics_event(e_type text, e_data jsonb)
-RETURNS void
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    INSERT INTO public.analytics_events (event_type, event_data)
-    VALUES (e_type, e_data);
+    UPDATE public.users
+    SET is_verified = new_status
+    WHERE id = target_user_id;
 END;
 $$;
 

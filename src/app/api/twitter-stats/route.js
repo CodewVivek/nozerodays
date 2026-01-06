@@ -10,8 +10,7 @@ export async function POST(request) {
 
         const bearerToken = process.env.TWITTER_BEARER_TOKEN;
 
-        console.log(`[API] Fetching stats for user: ${username}`);
-        console.log(`[API] Bearer Token Present: ${!!bearerToken}`);
+
 
         if (!bearerToken) {
             console.error('TWITTER_BEARER_TOKEN is not defined in env');

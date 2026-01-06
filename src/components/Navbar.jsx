@@ -92,7 +92,7 @@ const Navbar = () => {
                         <div className="relative" ref={dropdownRef}>
                             <button
                                 onClick={() => setOpen(!open)}
-                                className="p-1.5 rounded-xl hover:bg-card transition border border-transparent hover:border-border"
+                                className=""
                             >
                                 <img
                                     src={avatar}

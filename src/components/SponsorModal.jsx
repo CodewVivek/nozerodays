@@ -73,10 +73,15 @@ const SponsorModal = ({ isOpen, onClose, paymentLink }) => {
         setLoading(true);
 
         try {
+            // Get current user for ownership
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("You must be logged in.");
+
             const { data, error } = await supabase
                 .from('sponsors')
                 .insert([
                     {
+                        user_id: user.id,
                         title: formData.title,
                         description: formData.description,
                         target_url: formData.target_url,

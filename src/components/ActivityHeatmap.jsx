@@ -44,7 +44,8 @@ const ActivityHeatmap = ({ userUpdates = [] }) => {
                 const isActive = activeDaysSet.has(dateStr);
 
                 // Track Month Changes for Labels
-                if (current.getDate() === 1 || (w === 0 && i === 0)) {
+                // Only show label if it's the 1st of the month to avoid "Starting partial month" duplicate
+                if (current.getDate() === 1) {
                     const monthName = current.toLocaleDateString('en-US', { month: 'short' });
                     if (months.length === 0 || months[months.length - 1].name !== monthName) {
                         months.push({ name: monthName, weekIndex: w });
@@ -126,10 +127,10 @@ const ActivityHeatmap = ({ userUpdates = [] }) => {
                                             w-[12px] h-[12px] sm:w-[13px] sm:h-[13px] rounded-[2px] 
                                             transition-all duration-200
                                             ${day.active
-                                                ? 'bg-[#2da44e] dark:bg-[#39d353] shadow-sm' // GitHub Green (Light/Dark)
+                                                ? 'bg-green-500 dark:bg-green-600 shadow-sm' // Active (Green)
                                                 : day.isFuture
                                                     ? 'opacity-0'
-                                                    : 'bg-border/30 dark:bg-zinc-800' // Empty Cell
+                                                    : 'bg-neutral-200 dark:bg-neutral-800' // Empty (Solid Gray)
                                             }
                                         `}
                                     />
@@ -144,8 +145,8 @@ const ActivityHeatmap = ({ userUpdates = [] }) => {
             <div className="flex items-center justify-end gap-3 text-[10px] text-muted-foreground">
                 <span>Inactive</span>
                 <div className="flex gap-1">
-                    <div className="w-3 h-3 rounded-[2px] bg-border/30 dark:bg-zinc-800" />
-                    <div className="w-3 h-3 rounded-[2px] bg-[#2da44e] dark:bg-[#39d353]" />
+                    <div className="w-3 h-3 rounded-[2px] bg-neutral-200 dark:bg-neutral-800" />
+                    <div className="w-3 h-3 rounded-[2px] bg-green-500 dark:bg-green-600" />
                 </div>
                 <span>Active</span>
             </div>

@@ -197,7 +197,6 @@ const Leaderboard = ({ searchQuery = "" }) => {
                                 </span>
                             </div>
 
-
                             {/* Hover Tooltip - Definitive contrast fix */}
                             <div className="absolute top-full right-0 mt-3 w-64 p-5 bg-white dark:bg-[#1d2126] border border-slate-200 dark:border-slate-800 rounded-2xl text-[12px] text-slate-600 dark:text-slate-300 font-medium leading-relaxed opacity-0 invisible group-hover/timer:opacity-100 group-hover/timer:visible transition-all shadow-2xl z-[100] pointer-events-none translate-y-2 group-hover/timer:translate-y-0">
                                 <div className="flex items-center gap-2 mb-3">
