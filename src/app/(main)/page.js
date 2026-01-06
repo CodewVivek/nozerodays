@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PlusCircle, Search } from "lucide-react";
+import { PlusCircle, Search, HelpCircle } from "lucide-react";
 import Leaderboard from "../../components/Leaderboard";
 import SubmitModal from "../../components/SubmitModal";
+import HowItWorksModal from "../../components/HowItWorksModal";
 import { supabase } from "../../lib/supabase";
 
 export default function Home() {
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState(null);
 
@@ -79,6 +81,16 @@ export default function Home() {
                 Join
               </button>
             )}
+
+            {/* How It Works Button (Icon only on mobile, text on desktop?) or just icon? */}
+            <button
+              onClick={() => setIsHowItWorksOpen(true)}
+              className="flex items-center gap-2 px-6 py-4 rounded-2xl border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground font-bold transition-all"
+              title="How it works"
+            >
+              <HelpCircle size={20} />
+              <span className="hidden sm:inline">How it works</span>
+            </button>
           </div>
         </div>
 
@@ -89,6 +101,12 @@ export default function Home() {
       <SubmitModal
         isOpen={isSubmitModalOpen}
         onClose={() => setIsSubmitModalOpen(false)}
+      />
+
+      {/* HOW IT WORKS MODAL */}
+      <HowItWorksModal
+        isOpen={isHowItWorksOpen}
+        onClose={() => setIsHowItWorksOpen(false)}
       />
     </>
   );
