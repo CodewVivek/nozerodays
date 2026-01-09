@@ -70,12 +70,12 @@ export default function RootLayout({ children }) {
           src="https://datalaunch.vercel.app/track.js"
           data-site-id="ba842eb5-ca56-4da3-a40a-654a43a58c0d"
         />
-            <script
-  defer
-  data-website-id="dfid_hCeGxDcT3UBugCapYMRG1"
-  data-domain="nozerodays.vercel.app"
-  src="https://datafa.st/js/script.js">
-</script>
+        <Script
+          defer
+          data-website-id="dfid_hCeGxDcT3UBugCapYMRG1"
+          data-domain="nozerodays.vercel.app"
+          src="https://datafa.st/js/script.js"
+        />
         <ToastProvider>
           <AuthSync />
           <ReviewPendingModal />
