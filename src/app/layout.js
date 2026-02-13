@@ -65,7 +65,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-background text-foreground min-h-screen">
-      <script defer src="http://datalaunch.vercel.app/track.js" data-website-id="cef5ecf5-6295-4f31-a663-ebb44524b261" data-domain="https://nozerodays.vercel.app/"></script>
+      <script 
+  defer 
+  src="http://localhost:3000/track.js" 
+  data-website-id="cef5ecf5-6295-4f31-a663-ebb44524b261" 
+  data-domain="localhost"
+></script>
         <Script
           defer
           data-website-id="dfid_hCeGxDcT3UBugCapYMRG1"
