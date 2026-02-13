@@ -71,6 +71,7 @@ export default function RootLayout({ children }) {
   data-website-id="cef5ecf5-6295-4f31-a663-ebb44524b261" 
   data-domain="localhost"
 ></script>
+    <script async src="https://cdn.seline.com/seline.js" data-token="4296ed63dbc3cda"></script>
         <Script
           defer
           data-website-id="dfid_hCeGxDcT3UBugCapYMRG1"
